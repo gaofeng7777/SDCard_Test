@@ -84,6 +84,8 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 0x02 && resultCode == RESULT_OK) {
             if (Build.VERSION.SDK_INT >= 19) {
                 handleImageOnKitKat(data);
+            } else {
+                handleImageBeforeKitkat(data);
             }
         }
     }
@@ -119,12 +121,19 @@ public class MainActivity extends AppCompatActivity {
         displayPath(imagePath);
     }
 
+    private void handleImageBeforeKitkat(Intent data) {
+        Uri uri = data.getData();
+        String imagePath = getImagePath(uri, null);
+        displayPath(imagePath);
+    }
+
     private void displayPath(String imagePath) {
         if (imagePath != null) {
             Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+            //压缩图片
             Bitmap bitmap1 = compressBySampleSize(bitmap, 2, true);
             image_iv.setImageBitmap(bitmap1);
-
+            //保存图片
             saveBmp2Gallery(bitmap1, System.currentTimeMillis() + "");
         } else {
             Toast.makeText(MainActivity.this, "获得图片失败", Toast.LENGTH_SHORT).show();
